@@ -228,7 +228,7 @@ impl Transaction {
 }
 
 /// Turn an error with `Display` into a C string pointer using `malloc`.
-pub fn write_error_c_str<E: Display>(e: E, error: *mut *mut c_char) {
+fn write_error_c_str<E: Display>(e: E, error: *mut *mut c_char) {
     let error_str = CString::new(format!("{}", e)).unwrap();
     unsafe {
         *error = libc::malloc(error_str.as_bytes().len() + 1) as *mut c_char;

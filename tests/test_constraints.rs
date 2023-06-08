@@ -110,4 +110,19 @@ mod illegal_inputs {
         fm.add_request(&req);
         assert!(fm.solve(100, 10, 5).is_ok());
     }
+
+    #[test]
+    fn test_tiny_population() {
+        let mut fm = FeeMaximizer::init_empty();
+        let mut req = Request::init_empty();
+        req.add_transaction(Transaction {
+            from: Address::from_string(format!("A")).unwrap(),
+            to: Address::from_string(format!("B")).unwrap(),
+            amount: 1.0,
+            fee: 1.0,
+        })
+        .unwrap();
+        fm.add_request(&req);
+        assert!(fm.solve(1, 0, 5).is_ok());
+    }
 }
