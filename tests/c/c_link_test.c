@@ -43,7 +43,12 @@ int main(int argc, char *argv[]) {
     request_destroy(req);
 
     // solve for solution.
-    CSolution *sol = fee_maximizer_solve(fm, 1024, 32, 50);
+    CSolution *sol = fee_maximizer_solve(fm, 1024, 32, 50, &error);
+    if (sol == NULL) {
+        printf("Error: %s\n", error);
+        exit(1);
+    }
+
     for (size_t i = 0; i < sol->NTxs; i++) {
         printf("%s -> %s: amount = %f, fee = %f\n",
                sol->Txs[i].From,

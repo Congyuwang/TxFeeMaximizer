@@ -89,11 +89,17 @@ void fee_maximizer_add_request(struct FeeMaximizer *maximizer, const struct Requ
  * - population_size: number of individuals in the population.
  * - selection_size: number of individuals selected for the next generation.
  * - max_generation: maximum number of generations.
+ *
+ * The returned pointer is `nullptr` if an error occurs.
+ *
+ * The error string is allocated using `malloc` on error and
+ * must be freed by the caller using `libc::free`.
  */
 struct CSolution *fee_maximizer_solve(struct FeeMaximizer *maximizer,
                                       size_t population_size,
                                       size_t selection_size,
-                                      size_t max_generation);
+                                      size_t max_generation,
+                                      char **error);
 
 /**
  * Query address balance.

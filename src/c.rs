@@ -4,6 +4,7 @@ use libc::size_t;
 use std::ffi::{c_char, c_double, CString};
 use std::ffi::{c_int, CStr};
 use std::fmt::Display;
+use std::ptr::null_mut;
 
 #[repr(C)]
 pub struct CSolution {
@@ -112,14 +113,26 @@ pub unsafe extern "C" fn fee_maximizer_add_request(
 /// - population_size: number of individuals in the population.
 /// - selection_size: number of individuals selected for the next generation.
 /// - max_generation: maximum number of generations.
+///
+/// The returned pointer is `nullptr` if an error occurs.
+///
+/// The error string is allocated using `malloc` on error and
+/// must be freed by the caller using `libc::free`.
 #[no_mangle]
 pub unsafe extern "C" fn fee_maximizer_solve(
     maximizer: *mut FeeMaximizer,
     population_size: size_t,
     selection_size: size_t,
     max_generation: size_t,
+    error: *mut *mut c_char,
 ) -> *mut CSolution {
-    let sol = (*maximizer).solve(population_size, selection_size, max_generation);
+    let sol = match (*maximizer).solve(population_size, selection_size, max_generation) {
+        Ok(s) => s,
+        Err(e) => {
+            write_error_c_str(e, error);
+            return null_mut();
+        }
+    };
     let mut txs = sol
         .iter()
         .map(|tx| tx.to_c())
@@ -155,6 +168,9 @@ pub unsafe extern "C" fn fee_maximizer_query_address_balance(
 /// Safety: do never double call!
 #[no_mangle]
 pub unsafe extern "C" fn solution_destroy(sol: *mut CSolution) {
+    if sol.is_null() {
+        return;
+    }
     let txs = Vec::from_raw_parts(
         (*sol).txs as *mut CTransaction,
         (*sol).n_txs,

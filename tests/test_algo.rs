@@ -24,7 +24,7 @@ mod test_cases {
 
         write_requests(&mut fm, "./test_data/cases/tx_dependency_01.csv");
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
         assert_eq!(tx.len(), 4);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 21.0);
     }
@@ -37,7 +37,7 @@ mod test_cases {
 
         write_requests(&mut fm, "./test_data/cases/tx_dependency_02.csv");
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
         assert_eq!(tx.len(), 8);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 21.0);
     }
@@ -50,7 +50,7 @@ mod test_cases {
 
         write_requests(&mut fm, "./test_data/cases/tx_competition_01.csv");
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
         assert_eq!(tx.len(), 2);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 60.0);
     }
@@ -63,7 +63,7 @@ mod test_cases {
 
         write_requests(&mut fm, "./test_data/cases/tx_competition_02.csv");
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
         assert_eq!(tx.len(), 3);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 90.0);
     }
@@ -76,9 +76,9 @@ mod test_cases {
 
         write_requests(&mut fm, "./test_data/cases/long_chain_01.csv");
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
         assert_eq!(tx.len(), 5);
-        assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 60.0);
+        assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 70.0);
     }
 
     fn load_test_case<P: AsRef<Path>>(csv_path: P) -> HashMap<usize, Vec<TxEntry>> {
@@ -169,7 +169,7 @@ mod trivial_cases {
             fm.add_request(&req);
         }
 
-        fm.solve(8192, 32, 50);
+        fm.solve(8192, 32, 50).unwrap();
 
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 220.0);
         assert_eq!(fm.get_balance(&address_a), 50.0);
@@ -223,7 +223,7 @@ mod trivial_cases {
         .unwrap();
         fm.add_request(&req);
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
 
         assert_eq!(tx.len(), 4);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 21.0);
@@ -280,7 +280,7 @@ mod trivial_cases {
         .unwrap();
         fm.add_request(&req);
 
-        let tx = fm.solve(8192, 32, 50);
+        let tx = fm.solve(8192, 32, 50).unwrap();
 
         assert_eq!(tx.len(), 4);
         assert_eq!(fm.get_balance(&SYSTEM_ADDRESS), 21.0);

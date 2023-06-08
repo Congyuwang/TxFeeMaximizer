@@ -55,7 +55,13 @@ fn main() {
 
     println!("Start solving...");
 
-    let tx = fm.solve(arg.population_size, arg.selection_size, arg.num_generation);
+    let tx = match fm.solve(arg.population_size, arg.selection_size, arg.num_generation) {
+        Ok(tx) => tx,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return;
+        }
+    };
 
     println!("\nThe selected transactions are:");
     for t in tx {

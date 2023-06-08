@@ -141,10 +141,16 @@ impl FeeMaximizer {
         population_size: usize,
         selection_size: usize,
         num_generation: usize,
-    ) -> Vec<Transaction> {
+    ) -> Result<Vec<Transaction>, String> {
+        // basic check for parameters
+        if selection_size >= population_size {
+            return Err(format!(
+                "selection size should be smaller than population size"
+            ));
+        }
         // short circuit if there is no request.
         if self.requests.is_empty() {
-            return Vec::new();
+            return Ok(Vec::new());
         }
         let (tx_list, new_bal) = maximize_fee(
             &self.balance,
@@ -154,7 +160,7 @@ impl FeeMaximizer {
             num_generation,
         );
         self.balance = new_bal;
-        tx_list
+        Ok(tx_list)
     }
 
     /// Get a read-only reference of balance
